@@ -1,0 +1,409 @@
+:root {
+    /* --- Base colors --- */
+    --accent: rgb(0, 255, 0);
+    --error: rgb(255, 54, 54);
+    --success: rgb(34, 197, 94);
+    --warning: rgb(251, 191, 36);
+    --info: rgb(56, 189, 248);
+
+    /* Backgrounds */
+    --bg: #0f0f0f;
+    --bg-dim: #000;
+    --bg-bright: #222;
+    --bg-accent: color-mix(in srgb, var(--accent) 20%, var(--bg));
+
+    /* Ink/foreground */
+    --ink: rgb(222, 222, 222);
+    --ink-dim: color-mix(in srgb, var(--ink) 85%, var(--bg));
+    --ink-accent: color-mix(in srgb, var(--accent) 20%, var(--ink));
+    --ink-on-accent: var(--bg);
+
+    /* Semantic surfaces */
+    --surface: #1a1a1a;
+    --surface-dim: #0d0d0d;
+    --surface-bright: #2a2a2a;
+    --surface-accent: color-mix(in srgb, var(--accent) 10%, var(--bg));
+
+    /* Borders & divisions */
+    --border: color-mix(in srgb, var(--ink) 15%, transparent);
+    --border-dim: color-mix(in srgb, var(--ink) 8%, transparent);
+
+    /* --- Spacing Scale --- */
+    --space-xxs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+
+    /* --- Type Scale --- */
+    --font-family: "Hack", monospace;
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-md: 1rem;
+    --font-lg: 1.25rem;
+    --font-xl: 1.5rem;
+    --font-2xl: 2rem;
+    --font-3xl: 3rem;
+
+    --line-xs: 1.25;
+    --line-sm: 1.375;
+    --line-md: 1.5;
+    --line-lg: 1.625;
+    --line-xl: 2;
+    --line-2xl: 2.25;
+    --line-3xl: 2.5;
+
+    /* --- Utilities --- */
+    --border-radius: 0.25rem;
+    --z-modal: 1000;
+    --z-tooltip: 999;
+    --z-popover: 998;
+}
+/* BASE ELEMENTS */
+
+body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-family);
+    font-size: var(--font-md);
+    line-height: var(--line-md);
+    margin: 0;
+}
+
+/* Subtle grid background — enabled */
+/*body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        radial-gradient(var(--ink-dim) 1px, transparent 1px),
+        radial-gradient(var(--ink-dim) 1px, var(--bg) 1px);
+    background-size: 60px 60px;
+    background-position:
+        0 0,
+        30px 30px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg);
+    pointer-events: none;
+    z-index: -2;
+}*/
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid var(--ink-accent);
+    outline-offset: 2px;
+}
+
+/*
+BUTTONS
+*/
+
+button {
+    font-family: var(--font-family);
+    font-size: var(--font-md);
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    border: none;
+    border-radius: var(--border-radius);
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+/* Primary */
+button {
+    background-color: var(--accent);
+    color: var(--bg);
+    padding: var(--space-sm) var(--space-md);
+}
+
+/* Primary hover */
+button:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--accent), white 20%);
+}
+
+/* Danger */
+button.danger {
+    background-color: var(--error);
+    color: var(--bg);
+}
+
+button.danger:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--error), white 20%);
+}
+
+/* Warning */
+button.warning {
+    background-color: var(--warning);
+    color: var(--bg);
+}
+
+button.warning:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--warning), white 20%);
+}
+
+/* Success */
+button.success {
+    background-color: var(--success);
+    color: var(--bg);
+}
+
+button.success:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--success), white 20%);
+}
+
+/* Inverted (light on dark) */
+button.invert {
+    background-color: var(--bg-dim);
+    color: var(--ink);
+    padding: var(--space-sm) var(--space-md);
+}
+
+button.invert:hover:not(:disabled) {
+    background-color: var(--bg);
+}
+
+/* Disabled */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/*
+   INPUTS, TEXTAREA, SELECT
+*/
+
+input,
+textarea,
+select {
+    font-family: var(--font-family);
+    font-size: var(--font-md);
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--surface);
+    color: var(--ink);
+    padding: var(--space-sm) var(--space-md);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    appearance: none;
+    display: inline-grid;
+    place-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0 var(--space-xs) 0 0;
+    padding: 0;
+    vertical-align: middle;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    border-radius: var(--border-radius);
+}
+
+input[type="radio"] {
+    border-radius: 50%;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.35rem;
+    border: solid var(--ink-on-accent);
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg) scale(0);
+    transition: transform 0.12s ease-in-out;
+}
+
+input[type="radio"]::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--ink-on-accent);
+    transform: scale(0);
+    transition: transform 0.12s ease-in-out;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+input[type="checkbox"]:checked::before,
+input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+fieldset {
+    min-width: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+}
+
+legend {
+    padding-inline: var(--space-xs);
+    color: var(--ink-dim);
+}
+
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: var(--ink-dim);
+    opacity: 0.6;
+}
+
+/* Focus */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--ink-accent);
+    background-color: var(--bg-dim);
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+    outline: 2px solid var(--ink-accent);
+    outline-offset: 2px;
+}
+
+/* Invalid */
+input:user-invalid,
+textarea:user-invalid,
+select:user-invalid {
+    border-color: var(--error);
+    outline: 2px solid var(--error);
+    color: var(--error);
+}
+
+/*
+   CARDS & SURFACES
+*/
+
+.card {
+    background-color: var(--surface-bright);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    margin: var(--space-sm) 0;
+    border: 1px solid var(--border);
+}
+
+.card-invert {
+    background-color: var(--bg-dim);
+    color: var(--ink);
+    border-color: var(--border-dim);
+}
+
+/*
+   DETAILS / SUMMARY
+*/
+
+details {
+    background-color: var(--surface-bright);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    margin: var(--space-sm) 0;
+}
+
+details > summary {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-sm);
+    cursor: pointer;
+    user-select: none;
+}
+
+details > summary::before {
+    content: "▼";
+    color: var(--ink-dim);
+    float: left;
+    margin: 0 var(--space-xxs) 0 0;
+}
+
+details[open] > summary::before {
+    content: "▲";
+}
+
+/*
+   TABLES
+*/
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+caption {
+    padding: var(--space-sm) var(--space-md);
+    color: var(--ink-dim);
+    text-align: left;
+}
+
+th,
+td {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--border-dim);
+}
+
+th {
+    background-color: var(--surface);
+    color: var(--ink);
+    font-size: var(--font-sm);
+    font-weight: 600;
+}
+
+tbody tr {
+    background-color: var(--surface-bright);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--surface);
+}
+
+tbody tr:hover {
+    background-color: var(--surface-accent);
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.hero {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+}
