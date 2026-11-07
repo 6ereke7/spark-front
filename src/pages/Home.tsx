@@ -7,23 +7,19 @@ import { FinalCta } from "../components/home/FinalCta";
 import { Hero } from "../components/home/Hero";
 import { HowItWorks } from "../components/home/HowItWorks";
 import { TrustStrip } from "../components/home/TrustStrip";
-import { Footer } from "../components/layout/Footer";
 
 export function Home() {
   return (
-    <>
-      <main>
-        <Hero />
-        <TrustStrip />
-        <Features />
-        <CoursePreview />
-        <HowItWorks />
-        <AwarenessTeaser />
-        <EthicsNote />
-        <Faq />
-        <FinalCta />
-      </main>
-      <Footer />
-    </>
+    <main>
+      <Hero />
+      <TrustStrip />
+      <Features />
+      <CoursePreview />
+      <HowItWorks />
+      <AwarenessTeaser />
+      <EthicsNote />
+      <Faq />
+      <FinalCta />
+    </main>
   );
 }

@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
 import { courses } from "../../data/courses";
+import type { Course } from "../../types/course";
 import "./CoursePreview.css";
 
-export function CoursePreview() {
+interface CoursePreviewProps {
+  coursesToShow?: Course[];
+  showAllLink?: boolean;
+}
+
+export function CoursePreview({
+  coursesToShow = courses,
+  showAllLink = true,
+}: CoursePreviewProps) {
   return (
     <section
       className="course-preview"
@@ -16,12 +25,14 @@ export function CoursePreview() {
             <h2 id="courses-title">A path for every curious mind.</h2>
             <p>Short, focused courses to help you build real understanding.</p>
           </div>
-          <Link className="course-preview__all-link" to="/courses">
-            See all courses <span aria-hidden="true">→</span>
-          </Link>
+          {showAllLink && (
+            <Link className="course-preview__all-link" to="/#courses">
+              See all courses <span aria-hidden="true">→</span>
+            </Link>
+          )}
         </div>
         <div className="course-grid">
-          {courses.map((course) => (
+          {coursesToShow.map((course) => (
             <article className="course-card" key={course.slug}>
               <div className="course-card__badges">
                 <span className="course-card__level">{course.level}</span>
@@ -40,7 +51,7 @@ export function CoursePreview() {
               )}
               <ul className="course-card__meta" aria-label="Course details">
                 <li>{course.duration}</li>
-                <li>{course.lessons} lessons</li>
+                <li>{course.sessions} sessions</li>
                 <li>{course.labs} labs</li>
               </ul>
               <div className="course-card__footer">

@@ -334,6 +334,7 @@ details {
 }
 
 details > summary {
+  list-style: none;
   padding: var(--space-xs) var(--space-sm);
   font-size: var(--font-sm);
   cursor: pointer;
@@ -343,8 +344,7 @@ details > summary {
 details > summary::before {
   content: "▼";
   color: var(--ink-dim);
-  float: left;
-  margin: 0 var(--space-xxs) 0 0;
+  float: right;
 }
 
 details[open] > summary::before {

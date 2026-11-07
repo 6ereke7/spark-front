@@ -1,7 +1,15 @@
 import { faqs } from "../../data/faqs";
+import type { Faq as FaqItem } from "../../types/course";
 import "./Faq.css";
 
-export function Faq() {
+interface FaqProps {
+  items?: FaqItem[];
+}
+
+export function Faq({ items = faqs.map(({ question, answer }) => ({
+  q: question,
+  a: answer,
+})) }: FaqProps) {
   return (
     <section className="faq-section" aria-labelledby="faq-title">
       <div className="faq-section__container">
@@ -10,10 +18,10 @@ export function Faq() {
           <h2 id="faq-title">Frequently asked.</h2>
         </div>
         <div className="faq-list">
-          {faqs.map((faq) => (
-            <details className="faq-item" key={faq.question}>
-              <summary>{faq.question}</summary>
-              <p>{faq.answer}</p>
+          {items.map((faq) => (
+            <details className="faq-item" key={faq.q}>
+              <summary>{faq.q}</summary>
+              <p>{faq.a}</p>
             </details>
           ))}
         </div>
