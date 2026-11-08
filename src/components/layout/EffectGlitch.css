@@ -1,0 +1,139 @@
+/* Content: flickers in and jitters sideways, like an unstable signal */
+.page-glitch {
+  position: relative; /* `left` works without breaking sticky/fixed children */
+  animation: tv-content 300ms steps(1) backwards;
+}
+
+@keyframes tv-content {
+  0% {
+    opacity: 0;
+    left: -8px;
+  }
+  12% {
+    opacity: 0.7;
+    left: 6px;
+  }
+  24% {
+    opacity: 0.1;
+    left: -4px;
+  }
+  38% {
+    opacity: 1;
+    left: 3px;
+  }
+  52% {
+    opacity: 0.4;
+    left: -2px;
+  }
+  68% {
+    opacity: 1;
+    left: 1px;
+  }
+  100% {
+    opacity: 1;
+    left: 0;
+  }
+}
+
+/* Overlay: accent-colored static + scanlines + a rolling bright bar */
+.tv-static {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgb(0 0 0 / 0.35) 0 2px,
+      transparent 2px 4px
+    ),
+    var(--bg-accent);
+  animation: tv-fade 300ms steps(1) forwards;
+}
+
+/* Grayscale noise, multiplied so it takes on the accent color */
+.tv-static::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 200px;
+  mix-blend-mode: multiply;
+  animation: tv-noise 120ms steps(4) infinite;
+}
+
+/* Rolling bar, like a vertical-hold glitch */
+.tv-static::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 25%;
+  background: linear-gradient(
+    transparent,
+    rgb(255 255 255 / 0.45),
+    transparent
+  );
+  animation: tv-roll 450ms linear forwards;
+}
+
+@keyframes tv-fade {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  35% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  70% {
+    opacity: 0.25;
+  }
+  85% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes tv-noise {
+  0% {
+    background-position: 0 0;
+  }
+  25% {
+    background-position: -40px 25px;
+  }
+  50% {
+    background-position: 30px -50px;
+  }
+  75% {
+    background-position: -20px 60px;
+  }
+  100% {
+    background-position: 50px 10px;
+  }
+}
+
+@keyframes tv-roll {
+  from {
+    top: -25%;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-glitch {
+    animation: none;
+  }
+  .tv-static {
+    display: none;
+  }
+}

@@ -20,13 +20,7 @@ export function Hero() {
               Learn the foundations of cybersecurity through practical,
               responsible training.
             </p>
-            <p className="hero-typewriter">
-              <span aria-hidden="true">{"> "}</span>
-              <span className="hero-typewriter__text">
-                Learn ethically. Defend confidently.
-              </span>
-              <span className="hero-typewriter__cursor" aria-hidden="true" />
-            </p>
+
             <div className="hero-actions">
               <Link className="hero-action-button" to="/enroll">
                 Start Learning <span aria-hidden="true">→</span>
