@@ -1,0 +1,322 @@
+.awareness-page {
+  background: var(--bg);
+}
+
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+.awareness-header {
+  padding-block: var(--space-3xl);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 75%, var(--surface-dim)), var(--bg));
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.awareness-header__inner,
+.awareness-section__inner {
+  width: min(100% - var(--space-lg) * 2, 72rem);
+  margin-inline: auto;
+}
+
+.awareness-header h1 {
+  margin: 0 0 var(--space-sm);
+  font-size: clamp(var(--font-2xl), 6vw, var(--font-3xl));
+  line-height: var(--line-3xl);
+}
+
+.awareness-header__purpose {
+  max-width: 40rem;
+  margin: 0 0 var(--space-lg);
+  color: var(--ink-dim);
+}
+
+.awareness-eyebrow {
+  margin: 0 0 var(--space-sm);
+  color: var(--accent);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.awareness-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-xxs) var(--space-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-bright);
+  color: var(--ink-dim);
+  font-size: var(--font-xs);
+}
+
+.awareness-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.awareness-nav a {
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+
+.awareness-nav a:hover {
+  color: var(--accent);
+}
+
+.awareness-section {
+  padding-block: var(--space-3xl);
+}
+
+.awareness-section__heading {
+  margin-bottom: var(--space-xl);
+}
+
+.awareness-section__heading h2 {
+  margin: 0;
+  font-size: clamp(var(--font-xl), 5vw, var(--font-2xl));
+  line-height: var(--line-2xl);
+}
+
+.awareness-threats__grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.awareness-threat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 100%;
+  padding: var(--space-lg);
+}
+
+.awareness-threat h3,
+.awareness-redflag h3 {
+  margin: 0;
+  font-size: var(--font-lg);
+  line-height: var(--line-lg);
+}
+
+.awareness-threat__summary,
+.awareness-redflag p,
+.awareness-bridge__content p,
+.awareness-recovery__note,
+.awareness-myth p {
+  margin: 0;
+  color: var(--ink-dim);
+}
+
+.awareness-threat__example {
+  margin: 0;
+  padding: var(--space-md);
+  border-left: 2px solid var(--accent);
+  background: var(--surface-dim);
+  color: var(--ink);
+  font-style: italic;
+}
+
+.awareness-threat__group {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.awareness-threat__group h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--font-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.awareness-threat__group ul,
+.awareness-checklist__list,
+.awareness-recovery__list {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.awareness-threat__group li,
+.awareness-checklist__list li,
+.awareness-recovery__list li {
+  margin-bottom: var(--space-sm);
+  color: var(--ink-dim);
+}
+
+.awareness-checklist__list {
+  display: grid;
+  gap: var(--space-sm);
+  list-style: none;
+  padding-left: 0;
+}
+
+.awareness-checklist__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-dim);
+}
+
+.awareness-checklist__list li::before {
+  content: "✓";
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.awareness-redflags__grid {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.awareness-redflag {
+  padding: var(--space-lg);
+}
+
+.awareness-recovery__list {
+  display: grid;
+  gap: var(--space-md);
+  list-style: none;
+  padding-left: 0;
+}
+
+.awareness-recovery__list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-dim);
+}
+
+.awareness-recovery__list li p {
+  margin: 0;
+  color: var(--ink-dim);
+}
+
+.awareness-recovery__number {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--surface-bright);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.awareness-recovery__note {
+  margin-top: var(--space-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-dim);
+}
+
+.awareness-myths__list {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.awareness-myth {
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-dim);
+}
+
+.awareness-myth summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.awareness-myth p {
+  margin-top: var(--space-sm);
+}
+
+.awareness-bridge__inner {
+  display: grid;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  background: var(--surface-dim);
+}
+
+.awareness-bridge__content {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.awareness-bridge__content h2 {
+  margin: 0;
+  font-size: clamp(var(--font-xl), 5vw, var(--font-2xl));
+  line-height: var(--line-2xl);
+}
+
+.awareness-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.awareness-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.awareness-button--primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.awareness-button--primary:hover {
+  background: color-mix(in srgb, var(--accent), white 20%);
+}
+
+.awareness-button--secondary {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+}
+
+.awareness-button--secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media (min-width: 42rem) {
+  .awareness-header__inner,
+  .awareness-section__inner {
+    width: min(100% - var(--space-2xl) * 2, 72rem);
+  }
+
+  .awareness-threats__grid,
+  .awareness-redflags__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .awareness-checklist__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .awareness-bridge__inner {
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+    align-items: start;
+  }
+}

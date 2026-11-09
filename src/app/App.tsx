@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Home } from "../pages/Home";
+import { Awareness } from "../pages/Awareness";
 import { CourseDetail } from "../pages/CourseDetail";
 import { Enroll } from "../pages/Enroll";
 import { NavBar } from "../components/layout/NavBar";
@@ -15,6 +16,7 @@ export function App() {
       <EffectGlitch>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/awareness" element={<Awareness />} />
           <Route path="/courses/:slug" element={<CourseDetail />} />
           <Route path="/enroll" element={<Enroll />} />
         </Routes>

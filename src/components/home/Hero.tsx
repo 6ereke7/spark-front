@@ -46,12 +46,12 @@ export function Hero() {
               <span />
               <span />
               <span />
-              <span>andeluse-lab — safe practice</span>
+              <span>spark-lab — safe practice</span>
             </div>
             <div className="terminal__body" aria-hidden="true">
               <p>
-                <span className="terminal__prompt">learner@andeluse:~$</span>{" "}
-                start learning-path
+                <span className="terminal__prompt">learner@spark:~$</span> start
+                learning-path
               </p>
               <p>
                 <span className="terminal__muted">[01]</span> Security
@@ -66,7 +66,7 @@ export function Hero() {
                 practice <span className="terminal__ok">always</span>
               </p>
               <p className="terminal__last">
-                <span className="terminal__prompt">learner@andeluse:~$</span>{" "}
+                <span className="terminal__prompt">learner@spark:~$</span>{" "}
                 <span className="terminal__cursor" />
               </p>
             </div>

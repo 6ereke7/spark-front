@@ -13,13 +13,13 @@ export function NavBar() {
         <Link
           className="brand"
           to="/"
-          aria-label="Andeluse home"
+          aria-label="spark security home"
           onClick={closeMenu}
         >
           <span className="brand__mark" aria-hidden="true">
             &gt;_
           </span>
-          <span>andeluse</span>
+          <span>Spark Security</span>
         </Link>
 
         <button

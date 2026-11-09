@@ -40,7 +40,14 @@ const emptyForm: EnrollmentFormValues = {
 };
 
 const allowedReceiptTypes = ["application/pdf"];
-const allowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".heic"];
+const allowedImageExtensions = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".webp",
+  ".heic",
+];
 const maxReceiptSize = 5 * 1024 * 1024;
 
 function isAllowedReceipt(file: File): boolean {
@@ -109,7 +116,10 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
   }
 
   return (
-    <section className="enroll-form-card card" aria-labelledby="enroll-form-title">
+    <section
+      className="enroll-form-card card"
+      aria-labelledby="enroll-form-title"
+    >
       <div className="enroll-order-summary" aria-live="polite">
         <p className="enroll-order-summary__label">Order summary</p>
         {selectedCourse ? (
@@ -157,8 +167,12 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 name="fullName"
                 type="text"
                 value={form.fullName}
+                pattern="\p{L}+(?:[\-']\p{L}+)* \p{L}+(?:[\-']\p{L}+)*(?: \p{L}+(?:[\-']\p{L}+)*)*"
+                title="Enter your first and last name using letters only, separated by a space"
                 required
-                onChange={(event) => updateForm({ fullName: event.currentTarget.value })}
+                onChange={(event) =>
+                  updateForm({ fullName: event.currentTarget.value })
+                }
               />
             </div>
             <div className="enrollment-form__field">
@@ -170,7 +184,9 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 type="email"
                 value={form.email}
                 required
-                onChange={(event) => updateForm({ email: event.currentTarget.value })}
+                onChange={(event) =>
+                  updateForm({ email: event.currentTarget.value })
+                }
               />
             </div>
             <div className="enrollment-form__field">
@@ -182,7 +198,9 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 type="tel"
                 value={form.phone}
                 required
-                onChange={(event) => updateForm({ phone: event.currentTarget.value })}
+                onChange={(event) =>
+                  updateForm({ phone: event.currentTarget.value })
+                }
               />
             </div>
             <div className="enrollment-form__field">
@@ -197,7 +215,9 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 title="Enter a Telegram username starting with @ (5–32 characters)."
                 placeholder="@username"
                 required
-                onChange={(event) => updateForm({ telegramUsername: event.currentTarget.value })}
+                onChange={(event) =>
+                  updateForm({ telegramUsername: event.currentTarget.value })
+                }
               />
             </div>
             <div className="enrollment-form__field">
@@ -207,7 +227,9 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 name="course"
                 value={form.courseSlug}
                 required
-                onChange={(event) => updateForm({ courseSlug: event.currentTarget.value })}
+                onChange={(event) =>
+                  updateForm({ courseSlug: event.currentTarget.value })
+                }
               >
                 <option value="">Choose a course</option>
                 {courseOptions.map((course) => (
