@@ -1,4 +1,4 @@
-import type { Course } from "../types/course";
+import type { Course } from "../types/course.js";
 
 export const courses: Course[] = [
   {
@@ -12,7 +12,12 @@ export const courses: Course[] = [
     tag: "Start here",
     description:
       "Build a foundation in security principles and responsible testing. Learn how ethical hackers work within clear legal boundaries.",
-    skills: ["Security fundamentals", "Threat modeling", "Ethical practice", "Linux basics"],
+    skills: [
+      "Security fundamentals",
+      "Threat modeling",
+      "Ethical practice",
+      "Linux basics",
+    ],
   },
   {
     slug: "network-defense",
@@ -24,7 +29,12 @@ export const courses: Course[] = [
     price: "ETB 6,500",
     description:
       "Understand network structure, asset discovery, and defensive visibility. Practice reading network information in guided labs.",
-    skills: ["Network basics", "Asset discovery", "Traffic analysis", "Defense in depth"],
+    skills: [
+      "Network basics",
+      "Asset discovery",
+      "Traffic analysis",
+      "Defense in depth",
+    ],
   },
   {
     slug: "web-security",
@@ -36,6 +46,11 @@ export const courses: Course[] = [
     price: "ETB 8,000",
     description:
       "Study common web application risks and ways to prevent them. Apply each concept in controlled, authorized practice environments.",
-    skills: ["HTTP fundamentals", "Input validation", "Session security", "Secure design"],
+    skills: [
+      "HTTP fundamentals",
+      "Input validation",
+      "Session security",
+      "Secure design",
+    ],
   },
 ];

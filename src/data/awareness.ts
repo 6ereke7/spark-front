@@ -1,4 +1,4 @@
-import type { Faq } from "../types/course";
+import type { Faq } from "../types/faq";
 import type { Threat } from "../types/awareness";
 
 export const threats: Threat[] = [

@@ -12,8 +12,10 @@ export function CourseFormat({ course }: CourseFormatProps) {
     { label: "Start date", value: course.startDate },
     { label: "Duration", value: course.duration },
     { label: "Language", value: course.language },
-    { label: "Cohorts per year", value: String(course.cohortsPerYear) },
-  ];
+    ...(course.cohortsPerYear !== undefined
+      ? [{ label: "Cohorts per year", value: String(course.cohortsPerYear) }]
+      : []),
+  ].filter(({ value }) => value !== undefined && value !== "");
 
   return (
     <section className="course-section course-format" aria-labelledby="format-title">

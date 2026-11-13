@@ -10,13 +10,52 @@ import { RelatedCourses } from "../components/course/RelatedCourses";
 import { EthicsNote } from "../components/home/EthicsNote";
 import { Faq } from "../components/home/Faq";
 import { getCourseDetail } from "../data/courseDetails";
+import { courseFaqs } from "../data/courseFaqs";
+import { useCourse } from "../hooks/useCourse";
+import { useCohort } from "../hooks/useCohort";
 import "./CourseDetail.css";
 
 export function CourseDetail() {
   const { slug } = useParams();
-  const course = slug ? getCourseDetail(slug) : undefined;
+  const { data: course, status: courseStatus } = useCourse(slug ?? "");
+  const { cohort, status: cohortStatus } = useCohort(course?.slug ?? "");
+  const cohortFallback = slug ? getCourseDetail(slug) : undefined;
+  const displayCourse = course
+    ? {
+        ...course,
+        startDate:
+          cohortStatus === "ready" && cohort
+            ? cohort.startDate
+            : (cohortFallback?.startDate ?? course.startDate),
+        totalSeats:
+          cohortStatus === "ready" && cohort
+            ? cohort.totalSeats
+            : (cohortFallback?.totalSeats ?? course.totalSeats),
+        seatsLeft:
+          cohortStatus === "ready" && cohort
+            ? cohort.seatsLeft
+            : (cohortFallback?.seatsLeft ?? course.seatsLeft),
+        priceEtb:
+          cohortStatus === "ready" && cohort
+            ? (cohort.priceEtb ?? cohortFallback?.priceEtb ?? course.priceEtb)
+            : (cohortFallback?.priceEtb ?? course.priceEtb),
+        schedule:
+          cohortStatus === "ready" && cohort
+            ? (cohort.schedule ?? cohortFallback?.schedule ?? course.schedule)
+            : (cohortFallback?.schedule ?? course.schedule),
+      }
+    : null;
+  const registrationClosed = Boolean(course && cohortStatus === "none");
 
-  if (!course) {
+  if (!displayCourse && courseStatus === "loading") {
+    return (
+      <main className="course-not-found">
+        <h1>Loading course...</h1>
+      </main>
+    );
+  }
+
+  if (!displayCourse) {
     return (
       <main className="course-not-found">
         <h1>Course not found</h1>
@@ -27,22 +66,28 @@ export function CourseDetail() {
 
   return (
     <main className="course-detail">
-      <CourseHeader course={course} />
+      <CourseHeader
+        course={displayCourse}
+        registrationClosed={registrationClosed}
+      />
       <div className="course-detail__layout">
         <div className="course-detail__sections">
-          <LearningOutcomes outcomes={course.outcomes} />
-          <CourseFormat course={course} />
-          <CourseSyllabus weeks={course.weeks} />
+          <LearningOutcomes outcomes={displayCourse.outcomes} />
+          <CourseFormat course={displayCourse} />
+          <CourseSyllabus weeks={displayCourse.weeks} />
           <CourseAudience
-            audience={course.audience}
-            requirements={course.requirements}
+            audience={displayCourse.audience}
+            requirements={displayCourse.requirements}
           />
-          <CourseInstructors instructors={course.instructors} />
+          <CourseInstructors instructors={displayCourse.instructors} />
           <EthicsNote />
-          <Faq items={course.faqs} />
+          <Faq items={courseFaqs} />
         </div>
-        <CourseEnrollmentCard course={course} />
-        <RelatedCourses currentSlug={course.slug} />
+        <CourseEnrollmentCard
+          course={displayCourse}
+          registrationClosed={registrationClosed}
+        />
+        <RelatedCourses currentSlug={displayCourse.slug} />
       </div>
     </main>
   );

@@ -24,9 +24,12 @@ export interface Instructor {
   bio: string;
 }
 
-export interface Faq {
-  q: string;
-  a: string;
+export interface CourseContent {
+  outcomes: string[];
+  weeks: Week[];
+  requirements: string[];
+  audience: string[];
+  instructors: Instructor[];
 }
 
 export interface CourseDetail {
@@ -37,12 +40,11 @@ export interface CourseDetail {
   seatsLeft: number;
   priceEtb: number;
   schedule: string;
-  platform: string;
-  language: string;
-  cohortsPerYear: number;
+  platform?: string;
+  language?: string;
+  cohortsPerYear?: number;
   weeks: Week[];
   requirements: string[];
   audience: string[];
   instructors: Instructor[];
-  faqs: Faq[];
 }

@@ -4,9 +4,13 @@ import "./CourseEnrollmentCard.css";
 
 interface CourseEnrollmentCardProps {
   course: CourseWithDetail;
+  registrationClosed?: boolean;
 }
 
-export function CourseEnrollmentCard({ course }: CourseEnrollmentCardProps) {
+export function CourseEnrollmentCard({
+  course,
+  registrationClosed = false,
+}: CourseEnrollmentCardProps) {
   const isFull = course.seatsLeft === 0;
 
   return (
@@ -22,10 +26,16 @@ export function CourseEnrollmentCard({ course }: CourseEnrollmentCardProps) {
         </div>
         <div>
           <dt>Seats left</dt>
-          <dd>{course.seatsLeft} of {course.totalSeats}</dd>
+          <dd>
+            {course.seatsLeft} of {course.totalSeats}
+          </dd>
         </div>
       </dl>
-      {isFull ? (
+      {registrationClosed ? (
+        <button className="course-enrollment__button" type="button" disabled>
+          Registration closed
+        </button>
+      ) : isFull ? (
         <button className="course-enrollment__button" type="button" disabled>
           Cohort full
         </button>

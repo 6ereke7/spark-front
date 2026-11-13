@@ -4,9 +4,13 @@ import "./CourseHeader.css";
 
 interface CourseHeaderProps {
   course: CourseWithDetail;
+  registrationClosed?: boolean;
 }
 
-export function CourseHeader({ course }: CourseHeaderProps) {
+export function CourseHeader({
+  course,
+  registrationClosed = false,
+}: CourseHeaderProps) {
   return (
     <header className="course-detail-header">
       <nav className="course-detail-header__breadcrumb" aria-label="Breadcrumb">
@@ -30,7 +34,9 @@ export function CourseHeader({ course }: CourseHeaderProps) {
       <p className="course-detail-header__cohort">
         <span>Next cohort: {course.startDate}</span>
         <span>
-          {course.seatsLeft} seats left
+          {registrationClosed
+            ? "Registration closed"
+            : `${course.seatsLeft} seats left`}
         </span>
       </p>
     </header>

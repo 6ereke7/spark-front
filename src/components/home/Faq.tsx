@@ -1,5 +1,5 @@
 import { faqs } from "../../data/faqs";
-import type { Faq as FaqItem } from "../../types/course";
+import type { Faq as FaqItem } from "../../types/faq";
 import "./Faq.css";
 
 interface FaqProps {
