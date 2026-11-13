@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
-import { courses } from "../../data/courses";
+import { getCourseDetail } from "../../data/courseDetails";
+import { useCourses } from "../../hooks/useCourses";
 import { CourseCard } from "../bg/CourseCard";
 
 export function AcademyBridge() {
-  const beginnerCourse = courses.find((course) => course.slug === "ethical-hacking-foundations") ?? courses[0];
+  const { data: courses } = useCourses();
+  const beginnerCourse =
+    courses.find((course) => course.level === "Beginner") ??
+    getCourseDetail("ethical-hacking-foundations");
 
   if (!beginnerCourse) {
     return null;

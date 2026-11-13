@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { courses } from "../../data/courses";
 import type { Course } from "../../types/course";
 import "./CoursePreview.css";
 
@@ -9,7 +8,7 @@ interface CoursePreviewProps {
 }
 
 export function CoursePreview({
-  coursesToShow = courses,
+  coursesToShow = [],
   showAllLink = true,
 }: CoursePreviewProps) {
   return (

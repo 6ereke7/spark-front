@@ -1,6 +1,5 @@
 import { CoursePreview } from "../home/CoursePreview";
-import { courses } from "../../data/courses";
-import type { Course } from "../../types/course";
+import { useCourses } from "../../hooks/useCourses";
 import "./RelatedCourses.css";
 
 interface RelatedCoursesProps {
@@ -8,7 +7,8 @@ interface RelatedCoursesProps {
 }
 
 export function RelatedCourses({ currentSlug }: RelatedCoursesProps) {
-  const relatedCourses: Course[] = courses.filter(
+  const { data: courses } = useCourses();
+  const relatedCourses = courses.filter(
     (course) => course.slug !== currentSlug,
   );
 
