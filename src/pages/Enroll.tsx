@@ -2,13 +2,14 @@ import { useSearchParams } from "react-router-dom";
 import { EnrollForm } from "../components/enroll/EnrollForm";
 import { EnrollSteps } from "../components/enroll/EnrollSteps";
 import { PaymentInfo } from "../components/enroll/PaymentInfo";
-import { getCourseDetail } from "../data/courseDetails";
+import { useCourses } from "../hooks/useCourses";
 import "./Enroll.css";
 
 export function Enroll() {
   const [searchParams] = useSearchParams();
   const courseSlug = searchParams.get("course");
-  const initialCourse = courseSlug ? getCourseDetail(courseSlug) : undefined;
+  const { data: courses } = useCourses();
+  const initialCourse = courses.find((course) => course.slug === courseSlug);
 
   return (
     <main className="enroll-page">
@@ -23,8 +24,9 @@ export function Enroll() {
           <PaymentInfo />
         </div>
         <EnrollForm
-          key={courseSlug ?? "no-course"}
+          key={`${courseSlug ?? "no-course"}:${initialCourse?.slug ?? ""}`}
           initialCourseSlug={initialCourse?.slug ?? ""}
+          courses={courses}
         />
       </div>
     </main>

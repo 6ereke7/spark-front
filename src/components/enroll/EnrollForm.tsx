@@ -1,14 +1,19 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
-import { courses } from "../../data/courses";
 import {
-  getCourseDetail,
-  type CourseWithDetail,
-} from "../../data/courseDetails";
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
+import { ApiError, submitEnrollment } from "../../lib/api";
+import { useCohort } from "../../hooks/useCohort";
+import { getCourseDetail } from "../../data/courseDetails";
 import { ReceiptField, type ReceiptMethod } from "./ReceiptField";
+import type { Course } from "../../types/course";
 import "./EnrollForm.css";
 
 interface EnrollFormProps {
   initialCourseSlug: string;
+  courses: Course[];
 }
 
 interface EnrollmentFormValues {
@@ -22,8 +27,9 @@ interface EnrollmentFormValues {
   receiptLink: string;
   receiptError: string;
   agreedToEthics: boolean;
-  submitted: boolean;
 }
+
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
 
 const emptyForm: EnrollmentFormValues = {
   fullName: "",
@@ -36,7 +42,6 @@ const emptyForm: EnrollmentFormValues = {
   receiptLink: "",
   receiptError: "",
   agreedToEthics: false,
-  submitted: false,
 };
 
 const allowedReceiptTypes = ["application/pdf"];
@@ -60,22 +65,66 @@ function isAllowedReceipt(file: File): boolean {
   );
 }
 
-function getCourseOptions(): CourseWithDetail[] {
-  return courses
-    .map((course) => getCourseDetail(course.slug))
-    .filter((course): course is CourseWithDetail => course !== undefined);
+function getSubmitErrorMessage(error: unknown): string {
+  if (!(error instanceof ApiError)) {
+    return "Something went wrong. Please check your connection and try again.";
+  }
+
+  if (
+    error.status === 413 ||
+    (error.status === 400 &&
+      /receipt files must be 5 MB or smaller/i.test(error.message))
+  ) {
+    return "That file is too large. Maximum size is 5 MB.";
+  }
+  if (error.status === 429) {
+    return "Too many attempts. Please try again later.";
+  }
+  if (error.status === 400 || error.status === 409) return error.message;
+  return "Something went wrong. Please check your connection and try again.";
 }
 
-export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
+export function EnrollForm({
+  initialCourseSlug,
+  courses,
+}: EnrollFormProps) {
   const [form, setForm] = useState<EnrollmentFormValues>({
     ...emptyForm,
     courseSlug: initialCourseSlug,
   });
-  const courseOptions = getCourseOptions();
-  const selectedCourse = form.courseSlug
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
+  const [submitError, setSubmitError] = useState("");
+  const submitting = useRef(false);
+  const selectedCourse = courses.find((course) => course.slug === form.courseSlug);
+  const staticCohort = form.courseSlug
     ? getCourseDetail(form.courseSlug)
     : undefined;
-  const isFull = selectedCourse?.seatsLeft === 0;
+  const { cohort, status: cohortStatus } = useCohort(form.courseSlug);
+  const seatsLeft =
+    cohortStatus === "ready" && cohort
+      ? cohort.seatsLeft
+      : staticCohort?.seatsLeft;
+  const totalSeats =
+    cohortStatus === "ready" && cohort
+      ? cohort.totalSeats
+      : staticCohort?.totalSeats;
+  const startDate =
+    cohortStatus === "ready" && cohort
+      ? cohort.startDate
+      : staticCohort?.startDate;
+  const priceText =
+    cohortStatus === "ready" && cohort
+      ? cohort.priceEtb !== null
+        ? `ETB ${cohort.priceEtb.toLocaleString("en-US")}`
+        : staticCohort
+          ? `ETB ${staticCohort.priceEtb.toLocaleString("en-US")}`
+          : (selectedCourse?.price ?? "Price unavailable")
+      : staticCohort
+        ? `ETB ${staticCohort.priceEtb.toLocaleString("en-US")}`
+        : (selectedCourse?.price ?? "Price unavailable");
+  const isFull = seatsLeft === 0;
+  const registrationClosed =
+    Boolean(form.courseSlug) && cohortStatus === "none";
 
   function updateForm(values: Partial<EnrollmentFormValues>) {
     setForm((current) => ({ ...current, ...values }));
@@ -109,10 +158,38 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
     updateForm({ receiptFile: file, receiptError: "" });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // TODO: send to backend
-    updateForm({ submitted: true });
+    if (submitting.current) return;
+    submitting.current = true;
+    setSubmitStatus("submitting");
+    setSubmitError("");
+
+    const formData = new FormData();
+    formData.append("fullName", form.fullName);
+    formData.append("email", form.email);
+    formData.append("phone", form.phone);
+    formData.append("telegram", form.telegramUsername);
+    formData.append("courseSlug", form.courseSlug);
+    formData.append("receiptType", form.receiptMethod);
+    formData.append("agreedToTerms", String(form.agreedToEthics));
+
+    if (form.receiptMethod === "upload" && form.receiptFile) {
+      formData.append("receipt", form.receiptFile);
+    } else if (form.receiptMethod === "link") {
+      formData.append("receiptLink", form.receiptLink);
+    }
+
+    try {
+      await submitEnrollment(formData);
+      setForm(emptyForm);
+      setSubmitStatus("success");
+    } catch (error) {
+      setSubmitError(getSubmitErrorMessage(error));
+      setSubmitStatus("error");
+    } finally {
+      submitting.current = false;
+    }
   }
 
   return (
@@ -130,11 +207,21 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
             </div>
             <div>
               <dt>Starts</dt>
-              <dd>{selectedCourse.startDate}</dd>
+              <dd>{startDate}</dd>
+            </div>
+            <div>
+              <dt>Seats left</dt>
+              <dd>
+                {registrationClosed
+                  ? "Registration closed"
+                  : `${seatsLeft} of ${totalSeats}`}
+              </dd>
             </div>
             <div>
               <dt>Total</dt>
-              <dd>ETB {selectedCourse.priceEtb.toLocaleString("en-US")}</dd>
+              <dd>
+                {priceText}
+              </dd>
             </div>
           </dl>
         ) : (
@@ -142,7 +229,7 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
         )}
       </div>
 
-      {form.submitted ? (
+      {submitStatus === "success" ? (
         <div className="enroll-success" role="status">
           <h2 id="enroll-form-title">Registration received</h2>
           <p>
@@ -156,6 +243,11 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
           {isFull && (
             <p className="enroll-notice" role="status">
               This cohort is full. Choose another course to continue.
+            </p>
+          )}
+          {registrationClosed && (
+            <p className="enroll-notice" role="status">
+              Registration closed
             </p>
           )}
           <form className="enrollment-form" onSubmit={handleSubmit}>
@@ -232,7 +324,7 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 }
               >
                 <option value="">Choose a course</option>
-                {courseOptions.map((course) => (
+                {courses.map((course) => (
                   <option value={course.slug} key={course.slug}>
                     {course.title}
                   </option>
@@ -263,8 +355,20 @@ export function EnrollForm({ initialCourseSlug }: EnrollFormProps) {
                 I agree to use what I learn only for legal, authorized purposes
               </label>
             </div>
-            <button type="submit" disabled={isFull}>
-              Submit enrollment
+            {submitError && (
+              <p className="enroll-notice" role="alert">
+                {submitError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={
+                isFull || registrationClosed || submitStatus === "submitting"
+              }
+            >
+              {submitStatus === "submitting"
+                ? "Submitting..."
+                : "Submit enrollment"}
             </button>
           </form>
         </>
