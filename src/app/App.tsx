@@ -6,14 +6,15 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import "../styles/main.css";
 import { Home } from "../pages/Home";
 import { Awareness } from "../pages/Awareness";
 import { CourseDetail } from "../pages/CourseDetail";
 import { Enroll } from "../pages/Enroll";
 import { NavBar } from "../components/layout/NavBar";
-import ScrollToHash from "../components/layout/ScrollToHash";
+import { ScrollToHash } from "../components/layout/ScrollToHash";
 import { Footer } from "../components/layout/Footer";
-import EffectGlitch from "../components/layout/EffectGlitch";
+import { EffectGlitch } from "../components/layout/EffectGlitch";
 
 const AdminGuard = lazy(() =>
   import("../components/admin/AdminGuard").then((module) => ({

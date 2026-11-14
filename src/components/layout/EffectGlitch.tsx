@@ -1,12 +1,7 @@
-// src/components/layout/PageTransition.tsx
 import { useLocation } from "react-router-dom";
 import "./EffectGlitch.css";
 
-export default function EffectGlitch({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function EffectGlitch({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   return (
     <>

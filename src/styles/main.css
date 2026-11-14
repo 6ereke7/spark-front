@@ -1,10 +1,18 @@
 :root {
+    color-scheme: dark;
     /* --- Base colors --- */
-  --accent: rgb(54, 190, 70);
+    --accent: rgb(255 59 48);
     --error: rgb(255, 54, 54);
     --success: rgb(34, 197, 94);
     --warning: rgb(251, 191, 36);
     --info: rgb(56, 189, 248);
+
+    /* --- Effect Palette (canvas backgrounds) --- */
+    --fx-green: 0 255 70;
+    --fx-green-bright: 190 255 190;
+    --fx-green-soft: 90 255 130;
+    --fx-node: 70 255 120;
+    --fx-red: 250 0 0;
 
     /* Backgrounds */
     --bg: #0f0f0f;
@@ -38,6 +46,16 @@
     --space-2xl: 3rem;
     --space-3xl: 4rem;
 
+    /* --- Z-index Scale --- */
+    --z-bg: -1;
+    --z-raised: 1;
+    --z-sticky: 20;
+    --z-fixed: 30;
+    --z-popover: 998;
+    --z-tooltip: 999;
+    --z-modal: 1000;
+    --z-overlay: 9999;
+
     /* --- Type Scale --- */
     --font-family: "JetBrains Mono", monospace;
     --font-xs: 0.75rem;
@@ -58,9 +76,6 @@
 
     /* --- Utilities --- */
     --border-radius: 0.25rem;
-    --z-modal: 1000;
-    --z-tooltip: 999;
-    --z-popover: 998;
 }
 /* BASE ELEMENTS */
 html {
@@ -168,6 +183,7 @@ select {
     font-family: var(--font-family);
     font-size: var(--font-md);
     border: none;
+    outline: 1px solid var(--border);
     border-radius: var(--border-radius);
     background-color: var(--surface);
     color: var(--ink);
@@ -186,6 +202,7 @@ input[type="radio"] {
     margin: 0 var(--space-xs) 0 0;
     padding: 0;
     vertical-align: middle;
+    outline: none;
     border: 1px solid var(--border);
     background-color: var(--surface);
     cursor: pointer;
@@ -273,7 +290,6 @@ input[type="radio"]:focus {
 input:user-invalid,
 textarea:user-invalid,
 select:user-invalid {
-    border-color: var(--error);
     outline: 2px solid var(--error);
     color: var(--error);
 }
@@ -379,7 +395,7 @@ tbody tr:last-child td {
 
 .hero {
     position: relative;
-    z-index: 10;
+    z-index: var(--z-raised);
     text-align: center;
     padding: var(--space-3xl) var(--space-xl);
 }
