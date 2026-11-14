@@ -22,6 +22,9 @@ interface EditorValues {
   duration: string;
   sessions: string;
   labs: string;
+  platform: string;
+  language: string;
+  cohortsPerYear: string;
   tag: string;
   description: string;
   skills: string;
@@ -76,6 +79,9 @@ function createInitialValues(): EditorValues {
     duration: "",
     sessions: "0",
     labs: "0",
+    platform: "",
+    language: "",
+    cohortsPerYear: "",
     tag: "",
     description: "",
     skills: "",
@@ -93,6 +99,10 @@ function valuesFromCourse(course: AdminCourse): EditorValues {
     duration: course.duration,
     sessions: String(course.sessions),
     labs: String(course.labs),
+    platform: course.platform ?? "",
+    language: course.language ?? "",
+    cohortsPerYear:
+      course.cohortsPerYear === null ? "" : String(course.cohortsPerYear),
     tag: course.tag ?? "",
     description: course.description,
     skills: course.skills.join(", "),
@@ -215,6 +225,11 @@ export function AdminCourseEditor({ isNew = false }: { isNew?: boolean }) {
       duration: values.duration.trim(),
       sessions: Number(values.sessions),
       labs: Number(values.labs),
+      platform: values.platform.trim() || null,
+      language: values.language.trim() || null,
+      cohortsPerYear: values.cohortsPerYear.trim()
+        ? Number(values.cohortsPerYear)
+        : null,
       ...(values.tag.trim() ? { tag: values.tag.trim() } : {}),
       description: values.description.trim(),
       skills: values.skills.split(",").map((skill) => skill.trim()).filter(Boolean),
@@ -236,6 +251,9 @@ export function AdminCourseEditor({ isNew = false }: { isNew?: boolean }) {
           duration: payload.duration,
           sessions: payload.sessions,
           labs: payload.labs,
+          platform: payload.platform ?? null,
+          language: payload.language ?? null,
+          cohortsPerYear: payload.cohortsPerYear ?? null,
           tag: payload.tag ?? null,
           description: payload.description,
           skills: payload.skills,
@@ -320,6 +338,18 @@ export function AdminCourseEditor({ isNew = false }: { isNew?: boolean }) {
           <label className="admin-field">
             Labs
             <input type="number" min="0" max="200" required value={values.labs} onChange={(event) => update("labs", event.currentTarget.value)} />
+          </label>
+          <label className="admin-field">
+            Platform
+            <input maxLength={120} value={values.platform} onChange={(event) => update("platform", event.currentTarget.value)} />
+          </label>
+          <label className="admin-field">
+            Language
+            <input maxLength={60} value={values.language} onChange={(event) => update("language", event.currentTarget.value)} />
+          </label>
+          <label className="admin-field">
+            Cohorts per year
+            <input type="number" min="1" max="52" value={values.cohortsPerYear} onChange={(event) => update("cohortsPerYear", event.currentTarget.value)} />
           </label>
           <label className="admin-field">
             Tag
