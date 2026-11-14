@@ -9,7 +9,6 @@ import { LearningOutcomes } from "../components/course/LearningOutcomes";
 import { RelatedCourses } from "../components/course/RelatedCourses";
 import { EthicsNote } from "../components/home/EthicsNote";
 import { Faq } from "../components/home/Faq";
-import { getCourseDetail } from "../data/courseDetails";
 import { courseFaqs } from "../data/courseFaqs";
 import { useCourse } from "../hooks/useCourse";
 import { useCohort } from "../hooks/useCohort";
@@ -19,38 +18,36 @@ export function CourseDetail() {
   const { slug } = useParams();
   const { data: course, status: courseStatus } = useCourse(slug ?? "");
   const { cohort, status: cohortStatus } = useCohort(course?.slug ?? "");
-  const cohortFallback = slug ? getCourseDetail(slug) : undefined;
+  const activeCohort = cohortStatus === "ready" ? cohort : null;
   const displayCourse = course
-    ? {
-        ...course,
-        startDate:
-          cohortStatus === "ready" && cohort
-            ? cohort.startDate
-            : (cohortFallback?.startDate ?? course.startDate),
-        totalSeats:
-          cohortStatus === "ready" && cohort
-            ? cohort.totalSeats
-            : (cohortFallback?.totalSeats ?? course.totalSeats),
-        seatsLeft:
-          cohortStatus === "ready" && cohort
-            ? cohort.seatsLeft
-            : (cohortFallback?.seatsLeft ?? course.seatsLeft),
-        priceEtb:
-          cohortStatus === "ready" && cohort
-            ? (cohort.priceEtb ?? cohortFallback?.priceEtb ?? course.priceEtb)
-            : (cohortFallback?.priceEtb ?? course.priceEtb),
-        schedule:
-          cohortStatus === "ready" && cohort
-            ? (cohort.schedule ?? cohortFallback?.schedule ?? course.schedule)
-            : (cohortFallback?.schedule ?? course.schedule),
-      }
+    ? activeCohort
+      ? {
+          ...course,
+          startDate: activeCohort.startDate,
+          totalSeats: activeCohort.totalSeats,
+          seatsLeft: activeCohort.seatsLeft,
+          ...(activeCohort.priceEtb !== null
+            ? { priceEtb: activeCohort.priceEtb }
+            : {}),
+          schedule: activeCohort.schedule ?? course.schedule,
+        }
+      : course
     : null;
-  const registrationClosed = Boolean(course && cohortStatus === "none");
 
   if (!displayCourse && courseStatus === "loading") {
     return (
       <main className="course-not-found">
         <h1>Loading course...</h1>
+      </main>
+    );
+  }
+
+  if (!displayCourse && courseStatus === "error") {
+    return (
+      <main className="course-not-found">
+        <h1>Course temporarily unavailable</h1>
+        <p>We could not load this course right now. Please try again later.</p>
+        <Link to="/#courses">Browse courses</Link>
       </main>
     );
   }
@@ -66,10 +63,7 @@ export function CourseDetail() {
 
   return (
     <main className="course-detail">
-      <CourseHeader
-        course={displayCourse}
-        registrationClosed={registrationClosed}
-      />
+      <CourseHeader course={displayCourse} cohortStatus={cohortStatus} />
       <div className="course-detail__layout">
         <div className="course-detail__sections">
           <LearningOutcomes outcomes={displayCourse.outcomes} />
@@ -85,7 +79,7 @@ export function CourseDetail() {
         </div>
         <CourseEnrollmentCard
           course={displayCourse}
-          registrationClosed={registrationClosed}
+          cohortStatus={cohortStatus}
         />
         <RelatedCourses currentSlug={displayCourse.slug} />
       </div>

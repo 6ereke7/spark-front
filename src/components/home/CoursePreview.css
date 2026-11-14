@@ -32,6 +32,11 @@
   color: var(--ink-dim);
 }
 
+.course-preview__message {
+  margin: 0;
+  color: var(--ink-dim);
+}
+
 .course-preview__eyebrow {
   margin: 0 0 var(--space-sm);
   color: var(--accent);

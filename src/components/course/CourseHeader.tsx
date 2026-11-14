@@ -1,16 +1,20 @@
 import { Link } from "react-router-dom";
-import type { CourseWithDetail } from "../../data/courseDetails";
+import type { CohortStatus } from "../../hooks/useCohort";
+import type { CourseWithDetail } from "../../types/course";
 import "./CourseHeader.css";
 
 interface CourseHeaderProps {
   course: CourseWithDetail;
-  registrationClosed?: boolean;
+  cohortStatus: CohortStatus;
 }
 
 export function CourseHeader({
   course,
-  registrationClosed = false,
+  cohortStatus,
 }: CourseHeaderProps) {
+  const cohortLoading = cohortStatus === "loading";
+  const cohortUnavailable = cohortStatus === "error";
+  const noCohort = cohortStatus === "none";
   return (
     <header className="course-detail-header">
       <nav className="course-detail-header__breadcrumb" aria-label="Breadcrumb">
@@ -32,11 +36,24 @@ export function CourseHeader({
         <li>{course.labs} labs</li>
       </ul>
       <p className="course-detail-header__cohort">
-        <span>Next cohort: {course.startDate}</span>
         <span>
-          {registrationClosed
-            ? "Registration closed"
-            : `${course.seatsLeft} seats left`}
+          Next cohort:{" "}
+          {cohortLoading
+            ? "Loading..."
+            : cohortUnavailable
+              ? "Unavailable"
+              : noCohort
+                ? "Not scheduled"
+                : course.startDate}
+        </span>
+        <span>
+          {cohortLoading
+            ? "Checking availability..."
+            : cohortUnavailable
+              ? "Enrollment unavailable"
+              : noCohort
+                ? "Registration closed"
+                : `${course.seatsLeft} seats left`}
         </span>
       </p>
     </header>

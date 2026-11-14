@@ -8,7 +8,7 @@ import "./Enroll.css";
 export function Enroll() {
   const [searchParams] = useSearchParams();
   const courseSlug = searchParams.get("course");
-  const { data: courses } = useCourses();
+  const { data: courses, status } = useCourses();
   const initialCourse = courses.find((course) => course.slug === courseSlug);
 
   return (
@@ -17,6 +17,11 @@ export function Enroll() {
         <p className="enroll-page__eyebrow">Join a cohort</p>
         <h1>Enroll in a course</h1>
         <p>Reserve your place by completing payment and sending us your receipt.</p>
+        {status === "error" && (
+          <p className="enroll-notice" role="alert">
+            Courses are temporarily unavailable. Please try again later.
+          </p>
+        )}
       </header>
       <div className="enroll-page__layout">
         <div className="enroll-page__instructions">

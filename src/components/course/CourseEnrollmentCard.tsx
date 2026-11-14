@@ -1,37 +1,62 @@
 import { Link } from "react-router-dom";
-import type { CourseWithDetail } from "../../data/courseDetails";
+import type { CohortStatus } from "../../hooks/useCohort";
+import type { CourseWithDetail } from "../../types/course";
 import "./CourseEnrollmentCard.css";
 
 interface CourseEnrollmentCardProps {
   course: CourseWithDetail;
-  registrationClosed?: boolean;
+  cohortStatus: CohortStatus;
 }
 
 export function CourseEnrollmentCard({
   course,
-  registrationClosed = false,
+  cohortStatus,
 }: CourseEnrollmentCardProps) {
-  const isFull = course.seatsLeft === 0;
+  const cohortReady = cohortStatus === "ready";
+  const cohortLoading = cohortStatus === "loading";
+  const cohortUnavailable = cohortStatus === "error";
+  const noCohort = cohortStatus === "none";
+  const isFull = cohortReady && course.seatsLeft === 0;
 
   return (
     <aside className="course-enrollment" aria-label="Enroll in this cohort">
       <p className="course-enrollment__label">Cohort enrollment</p>
       <p className="course-enrollment__price">
-        ETB {course.priceEtb.toLocaleString("en-US")}
+        {cohortReady && typeof course.priceEtb === "number"
+          ? `ETB ${course.priceEtb.toLocaleString("en-US")}`
+          : "Price unavailable"}
       </p>
       <dl className="course-enrollment__details">
         <div>
           <dt>Starts</dt>
-          <dd>{course.startDate}</dd>
+          <dd>
+            {cohortReady
+              ? course.startDate
+              : cohortLoading
+                ? "Loading..."
+                : "Unavailable"}
+          </dd>
         </div>
         <div>
           <dt>Seats left</dt>
           <dd>
-            {course.seatsLeft} of {course.totalSeats}
+            {cohortReady
+              ? `${course.seatsLeft} of ${course.totalSeats}`
+              : cohortLoading
+                ? "Loading..."
+                : "Unavailable"}
           </dd>
         </div>
       </dl>
-      {registrationClosed ? (
+      {cohortLoading ? (
+        <button className="course-enrollment__button" type="button" disabled>
+          Checking availability...
+        </button>
+      ) : cohortUnavailable ? (
+        <button className="course-enrollment__button" type="button" disabled>
+          Enrollment unavailable
+        </button>
+      ) : noCohort ? (
         <button className="course-enrollment__button" type="button" disabled>
           Registration closed
         </button>

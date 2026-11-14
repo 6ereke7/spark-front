@@ -1,4 +1,4 @@
-import type { CourseWithDetail } from "../../data/courseDetails";
+import type { CourseWithDetail } from "../../types/course";
 import "./CourseAudience.css";
 
 interface CourseAudienceProps {

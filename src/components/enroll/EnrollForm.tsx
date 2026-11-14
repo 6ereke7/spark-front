@@ -6,7 +6,6 @@ import {
 } from "react";
 import { ApiError, submitEnrollment } from "../../lib/api";
 import { useCohort } from "../../hooks/useCohort";
-import { getCourseDetail } from "../../data/courseDetails";
 import { ReceiptField, type ReceiptMethod } from "./ReceiptField";
 import type { Course } from "../../types/course";
 import "./EnrollForm.css";
@@ -96,35 +95,20 @@ export function EnrollForm({
   const [submitError, setSubmitError] = useState("");
   const submitting = useRef(false);
   const selectedCourse = courses.find((course) => course.slug === form.courseSlug);
-  const staticCohort = form.courseSlug
-    ? getCourseDetail(form.courseSlug)
-    : undefined;
   const { cohort, status: cohortStatus } = useCohort(form.courseSlug);
-  const seatsLeft =
-    cohortStatus === "ready" && cohort
-      ? cohort.seatsLeft
-      : staticCohort?.seatsLeft;
-  const totalSeats =
-    cohortStatus === "ready" && cohort
-      ? cohort.totalSeats
-      : staticCohort?.totalSeats;
-  const startDate =
-    cohortStatus === "ready" && cohort
-      ? cohort.startDate
-      : staticCohort?.startDate;
-  const priceText =
-    cohortStatus === "ready" && cohort
-      ? cohort.priceEtb !== null
-        ? `ETB ${cohort.priceEtb.toLocaleString("en-US")}`
-        : staticCohort
-          ? `ETB ${staticCohort.priceEtb.toLocaleString("en-US")}`
-          : (selectedCourse?.price ?? "Price unavailable")
-      : staticCohort
-        ? `ETB ${staticCohort.priceEtb.toLocaleString("en-US")}`
-        : (selectedCourse?.price ?? "Price unavailable");
-  const isFull = seatsLeft === 0;
+  const cohortReady = cohortStatus === "ready" && cohort !== null;
+  const seatsLeft = cohortReady ? cohort.seatsLeft : null;
+  const totalSeats = cohortReady ? cohort.totalSeats : null;
+  const startDate = cohortReady ? cohort.startDate : "";
+  const priceText = cohortReady
+    ? cohort.priceEtb !== null
+      ? `ETB ${cohort.priceEtb.toLocaleString("en-US")}`
+      : (selectedCourse?.price ?? "Price unavailable")
+    : (selectedCourse?.price ?? "Price unavailable");
+  const isFull = cohortReady && cohort.seatsLeft === 0;
   const registrationClosed =
     Boolean(form.courseSlug) && cohortStatus === "none";
+  const cohortUnavailable = Boolean(form.courseSlug) && cohortStatus === "error";
 
   function updateForm(values: Partial<EnrollmentFormValues>) {
     setForm((current) => ({ ...current, ...values }));
@@ -207,14 +191,26 @@ export function EnrollForm({
             </div>
             <div>
               <dt>Starts</dt>
-              <dd>{startDate}</dd>
+              <dd>
+                {cohortStatus === "loading"
+                  ? "Loading..."
+                  : cohortStatus === "error"
+                    ? "Unavailable"
+                    : registrationClosed
+                      ? "Not scheduled"
+                      : startDate}
+              </dd>
             </div>
             <div>
               <dt>Seats left</dt>
               <dd>
                 {registrationClosed
                   ? "Registration closed"
-                  : `${seatsLeft} of ${totalSeats}`}
+                  : cohortStatus === "loading"
+                    ? "Loading..."
+                    : cohortStatus === "error"
+                      ? "Unavailable"
+                      : `${seatsLeft} of ${totalSeats}`}
               </dd>
             </div>
             <div>
@@ -248,6 +244,11 @@ export function EnrollForm({
           {registrationClosed && (
             <p className="enroll-notice" role="status">
               Registration closed
+            </p>
+          )}
+          {cohortUnavailable && (
+            <p className="enroll-notice" role="alert">
+              Cohort details are temporarily unavailable. Please try again later.
             </p>
           )}
           <form className="enrollment-form" onSubmit={handleSubmit}>
@@ -363,7 +364,10 @@ export function EnrollForm({
             <button
               type="submit"
               disabled={
-                isFull || registrationClosed || submitStatus === "submitting"
+                !cohortReady ||
+                isFull ||
+                registrationClosed ||
+                submitStatus === "submitting"
               }
             >
               {submitStatus === "submitting"

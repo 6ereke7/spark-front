@@ -10,14 +10,23 @@ import { TrustStrip } from "../components/home/TrustStrip";
 import { useCourses } from "../hooks/useCourses";
 
 export function Home() {
-  const { data: courses } = useCourses();
+  const { data: courses, status } = useCourses();
+  const coursesMessage =
+    status === "loading"
+      ? "Loading courses..."
+      : status === "error" || status === "notfound"
+        ? "Courses are temporarily unavailable. Please try again later."
+        : undefined;
 
   return (
     <main>
       <Hero />
       <TrustStrip />
       <Features />
-      <CoursePreview coursesToShow={courses.slice(0, 3)} />
+      <CoursePreview
+        coursesToShow={courses.slice(0, 3)}
+        message={coursesMessage}
+      />
       <HowItWorks />
       <AwarenessTeaser />
       <EthicsNote />
