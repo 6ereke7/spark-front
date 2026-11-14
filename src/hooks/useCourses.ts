@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { courses as fallbackCourses } from "../data/courses";
 import { ApiError, getCourses } from "../lib/api";
 import { mapApiCourseCard } from "../lib/courseData";
 import type { Course } from "../types/course";
@@ -13,7 +12,7 @@ interface CoursesState {
 
 export function useCourses(): CoursesState {
   const [state, setState] = useState<CoursesState>({
-    data: fallbackCourses,
+    data: [],
     status: "loading",
   });
 
@@ -25,12 +24,7 @@ export function useCourses(): CoursesState {
       .then((courses) => {
         if (active) {
           setState({
-            data: courses.map((course) =>
-              mapApiCourseCard(
-                course,
-                fallbackCourses.find((item) => item.slug === course.slug),
-              ),
-            ),
+            data: courses.map((course) => mapApiCourseCard(course)),
             status: "ready",
           });
         }
@@ -40,7 +34,7 @@ export function useCourses(): CoursesState {
           setState(
             error instanceof ApiError && error.status === 404
               ? { data: [], status: "notfound" }
-              : { data: fallbackCourses, status: "error" },
+              : { data: [], status: "error" },
           );
         }
       });

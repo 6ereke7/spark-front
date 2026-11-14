@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { getCourseDetail } from "../data/courseDetails";
 import { ApiError, getCourse } from "../lib/api";
 import { mapApiCourseDetail } from "../lib/courseData";
-import type { CourseWithDetail } from "../data/courseDetails";
+import type { CourseWithDetail } from "../types/course";
 
 export type CourseStatus = "loading" | "ready" | "notfound" | "error";
 
@@ -21,7 +20,6 @@ export function useCourse(slug: string): {
     data: null,
     status: "loading",
   });
-  const fallback = slug ? (getCourseDetail(slug) ?? null) : null;
 
   useEffect(() => {
     if (!slug) return;
@@ -39,7 +37,7 @@ export function useCourse(slug: string): {
         if (error instanceof ApiError && error.status === 404) {
           setState({ slug, data: null, status: "notfound" });
         } else {
-          setState({ slug, data: getCourseDetail(slug) ?? null, status: "error" });
+          setState({ slug, data: null, status: "error" });
         }
       });
 
@@ -50,6 +48,6 @@ export function useCourse(slug: string): {
   }, [slug]);
 
   if (!slug) return { data: null, status: "notfound" };
-  if (state.slug !== slug) return { data: fallback, status: "loading" };
+  if (state.slug !== slug) return { data: null, status: "loading" };
   return { data: state.data, status: state.status };
 }

@@ -1,15 +1,11 @@
 import type { ApiCourseCard, ApiCourseDetail } from "./api";
-import type { CourseWithDetail } from "../data/courseDetails";
-import type { Course } from "../types/course";
+import type { Course, CourseWithDetail } from "../types/course";
 
-export function mapApiCourseCard(
-  course: ApiCourseCard,
-  fallback?: Course,
-): Course {
+export function mapApiCourseCard(course: ApiCourseCard): Course {
   const price = course.nextCohort
     ? course.nextCohort.priceEtb !== null
       ? `${course.nextCohort.priceEtb.toLocaleString("en-US")} ETB`
-      : (fallback?.price ?? "Price unavailable")
+      : "Price unavailable"
     : "Registration closed";
 
   return {
@@ -38,6 +34,11 @@ export function mapApiCourseDetail(course: ApiCourseDetail): CourseWithDetail {
     ...(course.tag ? { tag: course.tag } : {}),
     description: course.description,
     skills: course.skills,
+    ...(course.platform !== null ? { platform: course.platform } : {}),
+    ...(course.language !== null ? { language: course.language } : {}),
+    ...(course.cohortsPerYear !== null
+      ? { cohortsPerYear: course.cohortsPerYear }
+      : {}),
     outcomes: course.content.outcomes,
     weeks: course.content.weeks,
     requirements: course.content.requirements,
@@ -46,7 +47,6 @@ export function mapApiCourseDetail(course: ApiCourseDetail): CourseWithDetail {
     startDate: "",
     totalSeats: 0,
     seatsLeft: 0,
-    priceEtb: 0,
     schedule: "",
   };
 }

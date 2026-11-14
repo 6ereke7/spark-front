@@ -1,126 +1,55 @@
 import axios from "axios";
+import type {
+  AdminCohort,
+  AdminCohortFilters,
+  AdminCohortInput,
+  AdminCohortUpdate,
+  AdminCourse,
+  AdminCourseInput,
+  AdminCourseListItem,
+  AdminCourseUpdate,
+  AdminEnrollment,
+  AdminLoginRequest,
+  AdminOkResponse,
+  AdminSummary,
+  AdminValidationIssue,
+  BulkVerifyRequest,
+  BulkVerifyResult,
+  EnrollmentFilters,
+  EnrollmentPage,
+  EnrollmentUpdate,
+  ManualEnrollmentInput,
+  MoveEnrollmentRequest,
+} from "../types/apiContract";
 
-export interface AdminCohortSummary {
-  id: number;
-  courseSlug: string;
-  startDate: string;
-  totalSeats: number;
-  verified: number;
-  seatsLeft: number;
-}
-
-export interface AdminCohort {
-  id: number;
-  courseSlug: string;
-  label: string | null;
-  startDate: string;
-  totalSeats: number;
-  priceEtb: number | null;
-  schedule: string | null;
-  isOpen: boolean;
-  counts: {
-    pending: number;
-    verified: number;
-    rejected: number;
-  };
-  seatsLeft: number;
-}
-
-export interface AdminCohortInput {
-  courseSlug: string;
-  label?: string;
-  startDate: string;
-  totalSeats: number;
-  priceEtb: number;
-  schedule: string;
-  isOpen?: boolean;
-}
-
-export interface AdminCohortUpdate {
-  courseSlug?: string;
-  label?: string | null;
-  startDate?: string;
-  totalSeats?: number;
-  priceEtb?: number | null;
-  schedule?: string | null;
-  isOpen?: boolean;
-}
-
-export interface ManualEnrollmentInput {
-  cohortId: number;
-  fullName: string;
-  email: string;
-  phone: string;
-  telegram: string;
-  status: "pending" | "verified";
-  adminNote?: string;
-}
-
-export interface AdminSummary {
-  pending: number;
-  verified: number;
-  rejected: number;
-  cohorts: AdminCohortSummary[];
-}
-
-export type EnrollmentStatus = "pending" | "verified" | "rejected";
-export type AdminCourseStatus = "draft" | "published" | "archived";
-export type AdminCourseLevel = "Beginner" | "Intermediate" | "Advanced";
-
-export interface AdminCourseContent {
-  outcomes: string[];
-  weeks: Array<{ title: string; topics: string[] }>;
-  requirements: string[];
-  audience: string[];
-  instructors: Array<{ name: string; role: string; bio: string }>;
-}
-
-export interface AdminCourseListItem {
-  slug: string;
-  title: string;
-  level: AdminCourseLevel;
-  status: AdminCourseStatus;
-  sortOrder: number;
-  updatedAt: string;
-  cohortCount: number;
-  enrollmentCount: number;
-}
-
-export interface AdminCourse extends Omit<AdminCourseListItem, "cohortCount" | "enrollmentCount"> {
-  duration: string;
-  sessions: number;
-  labs: number;
-  tag: string | null;
-  description: string;
-  skills: string[];
-  content: AdminCourseContent;
-  createdAt: string;
-}
-
-export interface AdminCourseInput {
-  slug: string;
-  status?: AdminCourseStatus;
-  sortOrder: number;
-  title: string;
-  level: AdminCourseLevel;
-  duration: string;
-  sessions: number;
-  labs: number;
-  tag?: string;
-  description: string;
-  skills: string[];
-  content: AdminCourseContent;
-}
-
-export type AdminCourseUpdate = Omit<
-  Partial<Omit<AdminCourseInput, "slug">>,
-  "tag"
-> & { tag?: string | null };
-
-export interface AdminValidationIssue {
-  path: string;
-  message: string;
-}
+export type {
+  AdminCohort,
+  AdminCohortFilters,
+  AdminCohortInput,
+  AdminCohortSummary,
+  AdminCohortUpdate,
+  AdminCourse,
+  AdminCourseContent,
+  AdminCourseInput,
+  AdminCourseLevel,
+  AdminCourseListItem,
+  AdminCourseStatus,
+  AdminCourseUpdate,
+  AdminEnrollment,
+  AdminErrorResponse,
+  AdminLoginRequest,
+  AdminOkResponse,
+  AdminSummary,
+  AdminValidationIssue,
+  BulkVerifyRequest,
+  BulkVerifyResult,
+  EnrollmentFilters,
+  EnrollmentPage,
+  EnrollmentStatus,
+  EnrollmentUpdate,
+  ManualEnrollmentInput,
+  MoveEnrollmentRequest,
+} from "../types/apiContract";
 
 export class AdminApiError extends Error {
   readonly status: number;
@@ -136,56 +65,6 @@ export class AdminApiError extends Error {
     this.status = status;
     this.issues = issues;
   }
-}
-
-export interface AdminEnrollment {
-  id: number;
-  cohortId: number;
-  courseSlug: string;
-  startDate: string;
-  totalSeats: number;
-  isOpen: boolean;
-  fullName: string;
-  email: string;
-  phone: string;
-  telegram: string;
-  receiptType: "upload" | "link" | "manual";
-  receiptRef: string | null;
-  status: EnrollmentStatus;
-  createdAt: string;
-  rejectionReason: string | null;
-  adminNote: string | null;
-  telegramInvited: boolean;
-  reviewedAt: string | null;
-  possibleDuplicate: boolean;
-  createdByAdmin: boolean;
-}
-
-export interface EnrollmentFilters {
-  status?: EnrollmentStatus;
-  courseSlug?: string;
-  cohortId?: number;
-  q?: string;
-  page?: number;
-}
-
-export interface EnrollmentPage {
-  items: AdminEnrollment[];
-  total: number;
-  page: number;
-  pageCount: number;
-}
-
-export interface EnrollmentUpdate {
-  status?: EnrollmentStatus;
-  rejectionReason?: string | null;
-  adminNote?: string | null;
-  telegramInvited?: boolean;
-}
-
-export interface BulkVerifyResult {
-  verified: number[];
-  skipped: Array<{ id: number; reason: string }>;
 }
 
 const adminApi = axios.create({
@@ -245,18 +124,21 @@ async function request<T>(operation: () => Promise<{ data: T }>): Promise<T> {
   }
 }
 
-export function login(password: string): Promise<{ ok: true }> {
+export function login(password: string): Promise<AdminOkResponse> {
+  const body: AdminLoginRequest = { password };
   return request(() =>
-    adminApi.post<{ ok: true }>("/api/admin/login", { password }),
+    adminApi.post<AdminOkResponse>("/api/admin/login", body),
   );
 }
 
-export function logout(): Promise<{ ok: true }> {
-  return request(() => adminApi.post<{ ok: true }>("/api/admin/logout"));
+export function logout(): Promise<AdminOkResponse> {
+  return request(() =>
+    adminApi.post<AdminOkResponse>("/api/admin/logout"),
+  );
 }
 
-export function me(): Promise<{ ok: true }> {
-  return request(() => adminApi.get<{ ok: true }>("/api/admin/me"));
+export function me(): Promise<AdminOkResponse> {
+  return request(() => adminApi.get<AdminOkResponse>("/api/admin/me"));
 }
 
 export function getSummary(): Promise<AdminSummary> {
@@ -298,10 +180,7 @@ export function deleteCourse(slug: string): Promise<void> {
 }
 
 export function listCohorts(
-  filters: {
-    courseSlug?: string;
-    isOpen?: boolean;
-  } = {},
+  filters: AdminCohortFilters = {},
 ): Promise<AdminCohort[]> {
   return request(() =>
     adminApi.get<AdminCohort[]>("/api/admin/cohorts", {
@@ -353,10 +232,9 @@ export function updateEnrollment(
 }
 
 export function bulkVerify(ids: number[]): Promise<BulkVerifyResult> {
+  const body: BulkVerifyRequest = { ids };
   return request(() =>
-    adminApi.post<BulkVerifyResult>("/api/admin/enrollments/bulk-verify", {
-      ids,
-    }),
+    adminApi.post<BulkVerifyResult>("/api/admin/enrollments/bulk-verify", body),
   );
 }
 
@@ -372,10 +250,9 @@ export function moveEnrollment(
   id: number,
   cohortId: number,
 ): Promise<AdminEnrollment> {
+  const body: MoveEnrollmentRequest = { cohortId };
   return request(() =>
-    adminApi.post<AdminEnrollment>(`/api/admin/enrollments/${id}/move`, {
-      cohortId,
-    }),
+    adminApi.post<AdminEnrollment>(`/api/admin/enrollments/${id}/move`, body),
   );
 }
 

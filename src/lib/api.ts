@@ -1,51 +1,17 @@
 import axios from "axios";
-import type { CourseContent, CourseLevel } from "../types/course";
+import type {
+  ApiCourseDetail,
+  Cohort,
+  CoursesResponse,
+  EnrollmentResponse,
+} from "../types/apiContract";
 
-export interface ApiCourseCard {
-  slug: string;
-  title: string;
-  level: CourseLevel;
-  duration: string;
-  sessions: number;
-  labs: number;
-  tag: string | null;
-  description: string;
-  skills: string[];
-  nextCohort: {
-    startDate: string;
-    label: string | null;
-    priceEtb: number | null;
-    seatsLeft: number;
-  } | null;
-}
-
-export interface ApiCourseDetail {
-  slug: string;
-  title: string;
-  level: CourseLevel;
-  duration: string;
-  sessions: number;
-  labs: number;
-  tag: string | null;
-  description: string;
-  skills: string[];
-  content: CourseContent;
-}
-
-export interface Cohort {
-  courseSlug: string;
-  startDate: string;
-  totalSeats: number;
-  seatsLeft: number;
-  priceEtb: number | null;
-  schedule: string | null;
-  label: string | null;
-}
-
-export interface EnrollmentResponse {
-  id: number;
-  status: "pending";
-}
+export type {
+  ApiCourseCard,
+  ApiCourseDetail,
+  Cohort,
+  EnrollmentResponse,
+} from "../types/apiContract";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -107,8 +73,8 @@ export function submitEnrollment(
   return request(() => api.post<EnrollmentResponse>("/api/enroll", formData));
 }
 
-export function getCourses(signal?: AbortSignal): Promise<ApiCourseCard[]> {
-  return request(() => api.get<ApiCourseCard[]>("/api/courses", { signal }));
+export function getCourses(signal?: AbortSignal): Promise<CoursesResponse> {
+  return request(() => api.get<CoursesResponse>("/api/courses", { signal }));
 }
 
 export function getCourse(
