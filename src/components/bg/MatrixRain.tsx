@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { readRgbToken, rgbaFromToken } from "../../lib/designTokens";
 import "./MatrixRain.css";
 
 const glyphs = "アカサタナハマヤラワ012345789:・";
@@ -16,6 +17,9 @@ export function MatrixRain({ children }: { children?: React.ReactNode }) {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
+
+    const headColor = readRgbToken("--fx-green-bright");
+    const tailColor = readRgbToken("--fx-green");
 
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -61,8 +65,8 @@ export function MatrixRain({ children }: { children?: React.ReactNode }) {
           const opacity = 1 - tail / (stream.length + 1);
           context.fillStyle =
             tail === 0
-              ? `rgba(190, 255, 190, ${opacity})`
-              : `rgba(0, 255, 70, ${opacity * 0.72})`;
+              ? rgbaFromToken(headColor, opacity)
+              : rgbaFromToken(tailColor, opacity * 0.72);
           const glyph = glyphs[Math.floor(Math.random() * glyphs.length)];
           context.fillText(glyph, column * fontSize, y);
         }

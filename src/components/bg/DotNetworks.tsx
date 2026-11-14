@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { readRgbToken, rgbaFromToken } from "../../lib/designTokens";
 import "./DotNetworks.css";
 
 type Dot = {
@@ -15,6 +16,8 @@ export function DotNetworks({ children }: { children?: React.ReactNode }) {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
+
+    const redColor = readRgbToken("--fx-red");
 
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -52,7 +55,7 @@ export function DotNetworks({ children }: { children?: React.ReactNode }) {
           if (distance >= connectionDistance) continue;
 
           const opacity = (1 - distance / connectionDistance) * 0.28;
-          context.strokeStyle = `rgba(0, 255, 70, ${opacity})`;
+          context.strokeStyle = rgbaFromToken(redColor, opacity);
           context.lineWidth = 1.5;
           context.beginPath();
           context.moveTo(dot.x, dot.y);
@@ -64,7 +67,7 @@ export function DotNetworks({ children }: { children?: React.ReactNode }) {
       dots.forEach(({ x, y }) => {
         context.beginPath();
         context.arc(x, y, 2.25, 0, Math.PI * 2);
-        context.fillStyle = "rgba(120, 255, 150, 0.65)";
+        context.fillStyle = rgbaFromToken(redColor, 1);
         context.fill();
       });
     };
