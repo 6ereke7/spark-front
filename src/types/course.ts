@@ -1,4 +1,11 @@
-export type CourseLevel = "Beginner" | "Intermediate" | "Advanced";
+import type { CourseLevel, Instructor, Week } from "./apiContract";
+
+export type {
+  CourseContent,
+  CourseLevel,
+  Instructor,
+  Week,
+} from "./apiContract";
 
 export interface Course {
   slug: string;
@@ -13,32 +20,13 @@ export interface Course {
   skills?: string[];
 }
 
-export interface Week {
-  title: string;
-  topics: string[];
-}
-
-export interface Instructor {
-  name: string;
-  role: string;
-  bio: string;
-}
-
-export interface CourseContent {
-  outcomes: string[];
-  weeks: Week[];
-  requirements: string[];
-  audience: string[];
-  instructors: Instructor[];
-}
-
 export interface CourseDetail {
   slug: string;
   outcomes: string[];
   startDate: string;
   totalSeats: number;
   seatsLeft: number;
-  priceEtb: number;
+  priceEtb?: number;
   schedule: string;
   platform?: string;
   language?: string;
@@ -48,3 +36,5 @@ export interface CourseDetail {
   audience: string[];
   instructors: Instructor[];
 }
+
+export type CourseWithDetail = Course & CourseDetail;
